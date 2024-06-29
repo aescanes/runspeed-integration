@@ -1,0 +1,35 @@
+name: runspeed
+
+services:
+  backend:
+    container_name: runspeed-backend
+    image: backend-python:latest
+    build:
+      context: ../backend-python
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    environment:
+      - FLASK_APP=api.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_ENV=dev
+      - PYTHONPATH=.
+
+  frontend:
+    container_name: runspeed-frontend
+    image: frontend-react:latest
+    build:
+      context: ../frontend-react
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+networks:
+  app-network:
+    driver: bridge
